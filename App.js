@@ -1,49 +1,41 @@
-import React from 'react';
 import {createAppContainer} from 'react-navigation';
-import {View, Button, Text} from 'react-native';
-import {HomeScreen} from './components/HomeScreen'
-import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
+import {HomeScreen} from './components/HomeScreen';
+import {createDrawerNavigator} from 'react-navigation-drawer';
+import {createStackNavigator} from 'react-navigation-stack';
+import React, {Component} from 'react';
+import {LoginScreen} from './components/LoginScreen';
+import {SignUpScreen} from './components/SignUpScreen';
 
-class DetailsScreen extends React.Component {
-  render() {
-    return (
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text>Details Screen</Text>
-        <Button
-          title="Go to Details... again"
-          onPress={() => this.props.navigation.push('Details')}
-        />
-      </View>
-      
-    );
-  }
-}
-class MenuScreen extends React.Component {
-  render() {
-    return (
-      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text>Details Screen</Text>
-        <Button
-          title="Go to Details... again"
-          onPress={() => this.props.navigation.push('Details')}
-        />
-      </View>
-      
-    );
-  }
-}
-
-
-const RootStack = createMaterialTopTabNavigator({
- 
-  Menu: MenuScreen,
+const HomeStack = createStackNavigator({
   Home: HomeScreen,
-  Details: DetailsScreen,
-},
-{
-  initialRouteName : "Details",
-  
-}
-);
+});
+const LoginStack = createStackNavigator({
+  Login: LoginScreen,
+});
+const SignUpStack = createStackNavigator({
+  SignUp: SignUpScreen,
+});
 
-export default App = createAppContainer(RootStack);
+
+const Drawer = createDrawerNavigator(
+  {
+    HomePage: {
+      screen: HomeStack,
+    },
+    Login: {
+      screen: LoginStack,
+    },
+    SignUp : {
+      screen : SignUpStack
+    }
+  },
+  {
+    navigationOptions: {},
+  },
+);
+const Main = createAppContainer(Drawer);
+export default class App extends Component {
+  render() {
+    return <Main />;
+  }
+}
