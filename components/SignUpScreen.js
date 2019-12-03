@@ -10,22 +10,116 @@ import {
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import {Dropdown} from 'react-native-material-dropdown';
+import {throwStatement} from '@babel/types';
 
 export class SignUpScreen extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      name: {
+        value: '',
+        error: '',
+        isValid: false,
+      },
+      number: {
+        value: '',
+        error: '',
+        isValid: false,
+      },
+      email: {
+        value: '',
+        error: '',
+        isValid: false,
+      },
+      Pick: {
+        value: '',
+        error: '',
+        isValid: false,
+      },
+    };
+  }
+
   static navigationOptions = ({navigation}) => ({
     headerTitle: <Head />,
     headerLeft: <BackClick navigate={navigation} />,
   });
+
+  submitForm = () => {
+    const pattName = /^[a-zA-Z ]*$/;
+    const pattNumber = /^(\d+-?)+\d+$/;
+    const pattEmail = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/gi;
+
+    if (this.state.name.value == '') {
+      this.setState({
+        name: {
+          err: 'name can not be null',
+          isValid: true,
+        },
+      });
+    } else if (pattName.test(this.state.name.value) == false) {
+      this.setState({
+        name: {
+          err: 'Invalid username',
+          isValid: true,
+        },
+      });
+    } else if (this.state.email.value == '') {
+      this.setState({
+        email: {
+          err: 'Email can be empty',
+          isValid: true,
+        },
+      });
+    } else if (pattEmail.test(this.state.email.value) == false) {
+      this.setState({
+        email: {
+          err: 'Invalid Email',
+          isValid: true,
+        },
+      });
+    } else if (this.state.Pick.value == '') {
+      this.setState({
+        Pick: {
+          err: 'please select class',
+          isValid: true,
+        },
+      });
+    } else if (this.state.number.value == '') {
+      this.setState({
+        email: {
+          err: 'Password can be empty',
+          isValid: true,
+        },
+      });
+    } else if (pattNumber.test(this.state.number.value) == false) {
+      this.setState({
+        number: {
+          err: 'Should not be string',
+          isValid: true,
+        },
+      });
+    } else if (this.state.number.value.length <= 6) {
+      this.setState({
+        number: {
+          err: 'Should not less 6 number ',
+          isValid: true,
+        },
+      });
+    } else {
+      this.props.navigation.navigate('Home', {name: this.state.name.value});
+    }
+  };
   render() {
     let data = [
       {
-        value: 'Banana',
+        value: 'SR',
       },
       {
-        value: 'Mango',
+        value: 'BTB',
       },
       {
-        value: 'Pear',
+        value: 'KPS',
       },
     ];
     return (
@@ -41,9 +135,38 @@ export class SignUpScreen extends Component {
         </View>
         <Text style={styles.TextStyle}>សូមស្វាគមន៏​មកាន់កម្មវិធីរបស់យើង</Text>
         <View>
-          <TextInput style={styles.InputStyle} placeholder="Username" />
-          <TextInput style={styles.InputStyle} placeholder="Email" />
+          <View>
+            {this.state.name.isValid ? (
+              <Text style={{color: 'red', marginLeft: 20}}>
+                {this.state.name.err}
+              </Text>
+            ) : null}
+            <TextInput
+              style={styles.InputStyle}
+              placeholder="Username"
+              onChangeText={value => this.setState({name: {value: value}})}
+              value={this.state.name.value}
+            />
+          </View>
+          <View>
+            {this.state.email.isValid ? (
+              <Text style={{color: 'red', marginLeft: 20}}>
+                {this.state.email.err}
+              </Text>
+            ) : null}
+            <TextInput
+              placeholder="Email"
+              onChangeText={value => this.setState({email: {value: value}})}
+              value={this.state.email.value}
+              style={styles.InputStyle}
+            />
+          </View>
           <View style={{paddingBottom: 10}}>
+            {this.state.Pick.isValid ? (
+              <Text style={{color: 'red', marginLeft: 20}}>
+                {this.state.Pick.err}
+              </Text>
+            ) : null}
             <Dropdown
               containerStyle={{
                 backgroundColor: 'white',
@@ -52,42 +175,53 @@ export class SignUpScreen extends Component {
               }}
               placeholder="class"
               data={data}
+              onChangeText={value => this.setState({Pick: {value: value}})}
+              value={this.state.Pick.value}
             />
           </View>
-
-          <TextInput
-            style={{paddingTop: 10}}
-            style={styles.InputStyle}
-            placeholder="password"
-            secureTextEntry={true}
-          />
-         
+          <View>
+            {this.state.number.isValid ? (
+              <Text style={{color: 'red', marginLeft: 20}}>
+                {this.state.number.err}
+              </Text>
+            ) : null}
+            <TextInput
+              style={{paddingTop: 10}}
+              style={styles.InputStyle}
+              onChangeText={value => this.setState({number: {value: value}})}
+              value={this.state.number.value}
+              placeholder="password"
+              secureTextEntry={true}
+            />
+          </View>
         </View>
         <TouchableOpacity>
-            <Text style={styles.TextLogin}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
+          <Text onPress={() => this.submitForm()} style={styles.TextLogin}>
+            Login
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
           <Text style={styles.TextStyle}>Not a Memeber ? Sign up here</Text>
         </TouchableOpacity>
       </View>
     );
   }
 }
-const BackClick = (props) => {
+const BackClick = props => {
   return (
     <View>
       <Icon
-      iconStyle={{marginLeft:10}}
+        iconStyle={{marginLeft: 10}}
         name="arrow-back"
         type="MaterialIcons"
-        onPress={ () => props.navigate.goBack(null)}
+        onPress={() => props.navigate.goBack(null)}
       />
     </View>
   );
 };
 const Head = () => {
   return (
-    <View style={ {paddingLeft:100}}>
+    <View style={{paddingLeft: 100}}>
       <Text style={{fontWeight: 'bold', fontSize: 25}}>ចុះឈ្មោះ</Text>
     </View>
   );
@@ -101,7 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#00BFFF',
   },
   Logo: {
-    marginTop: 50,
+    marginTop: 20,
   },
 
   InputStyle: {

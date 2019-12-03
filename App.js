@@ -5,7 +5,6 @@ import {createStackNavigator} from 'react-navigation-stack';
 import React, {Component} from 'react';
 import {LoginScreen} from './components/LoginScreen';
 import {SignUpScreen} from './components/SignUpScreen';
-
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
 });
@@ -16,7 +15,6 @@ const SignUpStack = createStackNavigator({
   SignUp: SignUpScreen,
 });
 
-
 const Drawer = createDrawerNavigator(
   {
     HomePage: {
@@ -25,9 +23,9 @@ const Drawer = createDrawerNavigator(
     Login: {
       screen: LoginStack,
     },
-    SignUp : {
-      screen : SignUpStack
-    }
+    SignUp: {
+      screen: SignUpStack,
+    },
   },
   {
     navigationOptions: {},
@@ -36,6 +34,8 @@ const Drawer = createDrawerNavigator(
 const Main = createAppContainer(Drawer);
 export default class App extends Component {
   render() {
-    return <Main />;
+    return (
+        <Main />
+    );
   }
 }

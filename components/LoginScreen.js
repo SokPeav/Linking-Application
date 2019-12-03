@@ -11,6 +11,48 @@ import {Icon} from 'react-native-elements';
 import SafeAreaView from 'react-native-safe-area-view';
 
 export class LoginScreen extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      name: {
+        value: '',
+        error: '',
+        isValid: false,
+      },
+      password: {
+        value: '',
+        error: '',
+        isValid: false,
+      },
+    };
+  }
+  Login = () => {
+    const pattName = /^[a-zA-Z ]*$/;
+    if (this.state.name.value == '') {
+      this.setState({
+        name: {
+          err: 'name can not be null',
+          isValid: true,
+        },
+      });
+    } else if (pattName.test(this.state.name.value) == false) {
+      this.setState({
+        name: {
+          err: 'Invalid username',
+          isValid: true,
+        },
+      });
+    } else if (this.state.password.value == '') {
+      this.setState({
+        password: {
+          err: 'name can not be null',
+          isValid: true,
+        },
+      });
+    } else
+      this.props.navigation.navigate('Home', {name: this.state.name.value});
+  };
   static navigationOptions = ({navigation}) => ({
     headerTitle: <Head />,
     headerLeft: <BackClick navigate={navigation} />,
@@ -30,15 +72,46 @@ export class LoginScreen extends Component {
         <Text style={styles.TextStyle}>សូមស្វាគមន៏​មកាន់កម្មវិធីរបស់យើង </Text>
 
         <View style={styles.Form}>
-          <TextInput style={styles.InputStyle} placeholder="Username" />
-          <TextInput style={styles.InputStyle} placeholder="Password" />
+          <View>
+            {this.state.name.isValid ? (
+              <Text style={{color: 'red', marginLeft: 20}}>
+                {this.state.name.err}
+              </Text>
+            ) : null}
+            <TextInput
+              style={styles.InputStyle}
+              onChangeText={value => this.setState({name: {value: value}})}
+              value={this.state.name.value}
+              placeholder="Username"
+            />
+          </View>
+          <View>
+            {this.state.password.isValid ? (
+              <Text style={{color: 'red', marginLeft: 20}}>
+                {this.state.password.err}
+              </Text>
+            ) : null}
+            <TextInput
+              style={styles.InputStyle}
+              onChangeText={value => this.setState({password: {value: value}})}
+              value={this.state.password.value}
+              secureTextEntry={true}
+              placeholder="Password"
+            />
+          </View>
         </View>
         <TouchableOpacity>
-          <Text style={styles.TextLogin}>Login</Text>
+          <Text onPress={() => this.Login()} style={styles.TextLogin}>
+            Login
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity>
-          <Text style={styles.TextStyle}>Not a Memeber ? Sign up here</Text>
+          <Text
+            onPress={() => this.props.navigation.navigate('SignUp')}
+            style={styles.TextStyle}>
+            Not a Memeber ? Sign up here
+          </Text>
         </TouchableOpacity>
       </View>
     );
@@ -46,19 +119,19 @@ export class LoginScreen extends Component {
 }
 const Head = () => {
   return (
-    <View style={{paddingLeft:100}}>
+    <View style={{paddingLeft: 100}}>
       <Text style={{fontWeight: 'bold', fontSize: 25}}>ចូលប្រព័ន្ធ</Text>
     </View>
   );
 };
-const BackClick = (props) => {
+const BackClick = props => {
   return (
     <View>
       <Icon
-      iconStyle={{marginLeft:10}}
+        iconStyle={{marginLeft: 10}}
         name="arrow-back"
         type="MaterialIcons"
-        onPress={ () => props.navigate.goBack(null)}
+        onPress={() => props.navigate.goBack(null)}
       />
     </View>
   );
